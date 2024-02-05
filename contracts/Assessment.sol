@@ -6,13 +6,25 @@ pragma solidity ^0.8.9;
 contract Assessment {
     address payable public owner;
     uint256 public balance;
+    uint8 public language;
 
     event Deposit(uint256 amount);
     event Withdraw(uint256 amount);
+    event ReceiptPrinted(
+        string userName,
+        uint256 balance,
+        string fatherName,
+        string nomineeName1,
+        string nomineeName2,
+        string transactionType,
+        uint256 amount
+    );
+    event LanguageChanged(uint8 newLanguage);
 
     constructor(uint initBalance) payable {
         owner = payable(msg.sender);
         balance = initBalance;
+        language = 0; // English by default
     }
 
     function getBalance() public view returns(uint256){
@@ -57,6 +69,26 @@ contract Assessment {
         // emit the event
         emit Withdraw(_withdrawAmount);
     }
+
+    function printReceipt() public {
+        require(msg.sender == owner, "You are not the owner of this account");
+
+        string memory userName = "Harinath ";
+        string memory fatherName = "Harinath ";
+        string memory nomineeName1 = "Harinath";
+        string memory nomineeName2 = "Harinath ";
+        string memory transactionType = "Deposit";
+        uint256 amount = 1;
+
+        emit ReceiptPrinted(userName, balance, fatherName, nomineeName1, nomineeName2, transactionType, amount);
+    }
+
+    function changeLanguage(uint8 _language) public {
+        require(_language <= 2, "Invalid language selection"); // Ensure language is within bounds
+        require(msg.sender == owner, "You are not the owner of this account");
+
+        language = _language;
+
+        emit LanguageChanged(language);
+    }
 }
-
-
